@@ -68,7 +68,7 @@ svg.selectAll(".month")
     .attr("id", function(d,i){ return month[i] })
     .attr("d", monthPath);
 
-d3.csv("https://raw.githubusercontent.com/masta-g3/d3js-heatpmap/master/data.csv", function(error, csv) {
+d3.csv("https://raw.githubusercontent.com/masta-g3/d3js-heatpmap/master/temp.csv", function(error, csv) {
 
   csv.forEach(function(d) {
     d.Comparison_Type = parseInt(d.Comparison_Type);
