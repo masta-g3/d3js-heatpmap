@@ -3,16 +3,16 @@ var width = 900,
     cellSize = 12; // cell size
     week_days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat']
     month = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
-	
+
 var day = d3.time.format("%w"),
     week = d3.time.format("%U"),
     percent = d3.format(".1%"),
 	format = d3.time.format("%Y%m%d");
 	parseDate = d3.time.format("%Y%m%d").parse;
-		
+
 var color = d3.scale.linear().range(["white", '#002b53'])
     .domain([0, 1])
-    
+
 var svg = d3.select(".calender-map").selectAll("svg")
     .data(d3.range(2011, 2015))
   .enter().append("svg")
@@ -27,14 +27,14 @@ svg.append("text")
     .attr("transform", "translate(-38," + cellSize * 3.5 + ")rotate(-90)")
     .style("text-anchor", "middle")
     .text(function(d) { return d; });
- 
+
 for (var i=0; i<7; i++)
-{    
+{
 svg.append("text")
     .attr("transform", "translate(-5," + cellSize*(i+1) + ")")
     .style("text-anchor", "end")
     .attr("dy", "-.25em")
-    .text(function(d) { return week_days[i]; }); 
+    .text(function(d) { return week_days[i]; });
  }
 
 var rect = svg.selectAll(".day")
@@ -60,7 +60,7 @@ legend.append("text")
    .style("text-anchor", "end")
    .attr("dy", "-.25em")
    .text(function(d,i){ return month[i] });
-   
+
 svg.selectAll(".month")
     .data(function(d) { return d3.time.months(new Date(d, 0, 1), new Date(d + 1, 0, 1)); })
   .enter().append("path")
@@ -68,23 +68,23 @@ svg.selectAll(".month")
     .attr("id", function(d,i){ return month[i] })
     .attr("d", monthPath);
 
-d3.csv("data.csv", function(error, csv) {
+d3.csv("https://raw.githubusercontent.com/masta-g3/d3js-heatpmap/master/data.csv", function(error, csv) {
 
   csv.forEach(function(d) {
     d.Comparison_Type = parseInt(d.Comparison_Type);
   });
 
  var Comparison_Type_Max = d3.max(csv, function(d) { return d.Comparison_Type; });
- 
+
   var data = d3.nest()
     .key(function(d) { return d.Date; })
     .rollup(function(d) { return  Math.sqrt(d[0].Comparison_Type / Comparison_Type_Max); })
     .map(csv);
-	
+
   rect.filter(function(d) { return d in data; })
       .attr("fill", function(d) { return color(data[d]); })
-	  .attr("data-title", function(d) { return "value : "+Math.round(data[d]*100)});   
-	$("rect").tooltip({container: 'body', html: true, placement:'top'}); 
+	  .attr("data-title", function(d) { return "value : "+Math.round(data[d]*100)});
+	$("rect").tooltip({container: 'body', html: true, placement:'top'});
 });
 
 function numberWithCommas(x) {
